@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WAVE — Prado Clothing</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #080808;
+  --off-white: #ece8e1;
+  --wave-blue: #0055ff;
+  --wave-cyan: #00cfff;
+  --dark-panel: #0e0e0e;
+  --border: rgba(255,255,255,0.07);
+  --muted: rgba(236,232,225,0.4);
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--black);
+  color:var(--off-white);
+  font-family:'Syne',sans-serif;
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* ── CURSOR ── */
+.cur{width:10px;height:10px;background:var(--wave-cyan);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:99999;transition:transform .15s;}
+.cur-ring{width:36px;height:36px;border:1px solid rgba(0,207,255,.5);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:99998;transition:all .12s ease;}
+body:has(a:hover) .cur,.cur.hover{transform:scale(3);}
+
+/* ── NOISE ── */
+body::after{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:9990;
+}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:20px 48px;
+  background:rgba(8,8,8,0.85);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+}
+.logo{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.8rem;letter-spacing:.2em;
+  color:var(--off-white);text-decoration:none;
+  display:flex;align-items:center;gap:12px;
+}
+.logo-sub{
+  font-family:'Space Mono',monospace;
+  font-size:.45rem;letter-spacing:.25em;
+  text-transform:uppercase;color:var(--muted);
+  margin-top:2px;line-height:1;
+}
+.logo-wrap{display:flex;flex-direction:column;}
+.nav-r{display:flex;align-items:center;gap:28px;}
+.nav-link{
+  font-family:'Space Mono',monospace;font-size:.6rem;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted);text-decoration:none;transition:color .25s;
+}
+.nav-link:hover{color:var(--wave-cyan);}
+.nav-btn{
+  font-family:'Space Mono',monospace;font-size:.6rem;
+  letter-spacing:.15em;text-transform:uppercase;
+  padding:10px 22px;
+  border:1px solid var(--wave-blue);
+  color:var(--wave-blue);background:transparent;
+  cursor:none;text-decoration:none;transition:all .3s;
+}
+.nav-btn:hover{background:var(--wave-blue);color:var(--off-white);}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  justify-content:center;padding:0 48px;
+  position:relative;overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;z-index:0;
+  background:radial-gradient(ellipse 60% 60% at 80% 40%, rgba(0,85,255,.12) 0%, transparent 70%),
+             radial-gradient(ellipse 40% 40% at 20% 80%, rgba(0,207,255,.07) 0%, transparent 70%);
+}
+/* Animated scan line */
+.scanline{
+  position:absolute;top:-100%;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(0,207,255,.15),transparent);
+  animation:scan 6s linear infinite;z-index:1;
+}
+@keyframes scan{to{top:110%;}}
+
+.hero-label{
+  font-family:'Space Mono',monospace;font-size:.6rem;
+  letter-spacing:.35em;text-transform:uppercase;
+  color:var(--wave-cyan);margin-bottom:20px;
+  position:relative;z-index:2;
+  opacity:0;animation:up .7s .2s forwards;
+}
+.hero-h1{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(7rem,18vw,20rem);
+  line-height:.85;letter-spacing:-.01em;
+  position:relative;z-index:2;
+  opacity:0;animation:up .7s .35s forwards;
+}
+.hero-h1 .outline{
+  color:transparent;
+  -webkit-text-stroke:1.5px rgba(0,85,255,.7);
+}
+.hero-h1 .cyan{color:var(--wave-cyan);}
+
+.hero-drop-badge{
+  display:inline-flex;align-items:center;gap:12px;
+  background:rgba(0,85,255,.1);
+  border:1px solid rgba(0,85,255,.3);
+  padding:12px 24px;margin-top:32px;
+  font-family:'Space Mono',monospace;font-size:.65rem;
+  letter-spacing:.15em;text-transform:uppercase;
+  position:relative;z-index:2;
+  opacity:0;animation:up .7s .5s forwards;
+  width:fit-content;
+}
+.badge-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--wave-cyan);
+  animation:pulse 1.5s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.7);}}
+
+.hero-sub{
+  font-size:.95rem;color:var(--muted);line-height:1.7;
+  max-width:380px;margin-top:28px;
+  position:relative;z-index:2;
+  opacity:0;animation:up .7s .65s forwards;
+}
+.hero-actions{
+  display:flex;align-items:center;gap:28px;margin-top:44px;
+  position:relative;z-index:2;
+  opacity:0;animation:up .7s .8s forwards;
+}
+.btn-main{
+  font-family:'Space Mono',monospace;font-size:.7rem;
+  letter-spacing:.15em;text-transform:uppercase;
+  padding:18px 42px;background:var(--wave-blue);
+  color:var(--off-white);border:none;cursor:none;
+  text-decoration:none;position:relative;overflow:hidden;
+  clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));
+  transition:background .3s;
+}
+.btn-main:hover{background:#0044dd;}
+.btn-ghost{
+  font-family:'Space Mono',monospace;font-size:.7rem;
+  letter-spacing:.15em;text-transform:uppercase;
+  color:var(--muted);text-decoration:none;
+  border-bottom:1px solid rgba(236,232,225,.2);
+  padding-bottom:3px;transition:color .3s,border-color .3s;
+}
+.btn-ghost:hover{color:var(--off-white);border-color:var(--off-white);}
+
+/* Big ghost number */
+.hero-ghost{
+  position:absolute;right:40px;bottom:-20px;
+  font-family:'Bebas Neue',sans-serif;font-size:22rem;
+  color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.03);
+  user-select:none;pointer-events:none;z-index:1;
+  letter-spacing:-.02em;
+}
+
+@keyframes up{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── TICKER ── */
+.ticker{background:var(--wave-blue);padding:13px 0;overflow:hidden;border-top:1px solid rgba(0,207,255,.2);border-bottom:1px solid rgba(0,207,255,.2);}
+.ticker-t{display:flex;animation:tick 22s linear infinite;white-space:nowrap;}
+.t-item{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.15em;padding:0 36px;flex-shrink:0;}
+.t-sep{color:rgba(236,232,225,.4);margin:0 4px;}
+@keyframes tick{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* ── DROP 001 ── */
+.drop-section{padding:100px 48px;position:relative;overflow:hidden;}
+.sec-label{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.35em;text-transform:uppercase;color:var(--wave-cyan);margin-bottom:14px;}
+.sec-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(3.5rem,9vw,8rem);line-height:.9;margin-bottom:56px;}
+
+/* Product card — flip on hover */
+.product-showcase{display:grid;grid-template-columns:1fr 1fr;gap:2px;}
+.product-main{
+  background:var(--dark-panel);
+  border:1px solid var(--border);
+  padding:56px 48px;
+  display:flex;flex-direction:column;
+  position:relative;overflow:hidden;
+}
+.product-main::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--wave-blue),var(--wave-cyan));
+}
+/* Giant hoodie silhouette (CSS drawn) */
+.hoodie-art{
+  width:100%;max-width:360px;margin:0 auto 40px;
+  aspect-ratio:1;position:relative;
+  display:flex;align-items:center;justify-content:center;
+}
+.hoodie-svg-wrap{width:100%;height:100%;opacity:.85;}
+
+.product-info{}
+.drop-name{
+  font-family:'Space Mono',monospace;font-size:.58rem;
+  letter-spacing:.3em;text-transform:uppercase;
+  color:var(--wave-cyan);margin-bottom:8px;
+}
+.product-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:3.2rem;letter-spacing:.05em;line-height:1;
+  margin-bottom:6px;
+}
+.product-design{
+  font-family:'Space Mono',monospace;font-size:.6rem;
+  letter-spacing:.15em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:28px;
+}
+.detail-row{display:flex;gap:32px;margin-bottom:36px;}
+.detail-item{}
+.detail-key{font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(236,232,225,.25);margin-bottom:4px;}
+.detail-val{font-size:.85rem;font-weight:600;}
+
+/* Flip card for front/back */
+.flip-area{perspective:1000px;margin-bottom:32px;}
+.flip-inner{
+  position:relative;width:100%;
+  transform-style:preserve-3d;transition:transform .7s cubic-bezier(.4,0,.2,1);
+}
+.flip-inner.flipped{transform:rotateY(180deg);}
+.flip-face{
+  background:rgba(0,85,255,.06);border:1px solid rgba(0,85,255,.2);
+  padding:24px;border-radius:2px;
+}
+.flip-back{
+  position:absolute;inset:0;
+  background:rgba(0,207,255,.06);border:1px solid rgba(0,207,255,.2);
+  padding:24px;border-radius:2px;
+  backface-visibility:hidden;transform:rotateY(180deg);
+}
+.flip-face{backface-visibility:hidden;}
+.flip-label{font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.flip-text{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.05em;line-height:1.1;}
+.flip-text.back-text{color:var(--wave-cyan);}
+.flip-toggle{
+  font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--muted);
+  background:none;border:none;cursor:none;padding:0;
+  display:flex;align-items:center;gap:8px;
+  transition:color .25s;
+}
+.flip-toggle:hover{color:var(--wave-cyan);}
+.flip-toggle span{display:inline-block;transition:transform .3s;}
+.flip-toggle:hover span{transform:rotate(180deg);}
+
+/* Order form panel */
+.order-panel{
+  background:var(--dark-panel);border:1px solid var(--border);
+  padding:48px 40px;display:flex;flex-direction:column;gap:0;
+}
+.op-title{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.05em;margin-bottom:8px;}
+.op-sub{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:36px;}
+
+.form-field{margin-bottom:20px;}
+.form-label{
+  font-family:'Space Mono',monospace;font-size:.55rem;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(236,232,225,.4);display:block;margin-bottom:8px;
+}
+.form-input,.form-select{
+  width:100%;background:rgba(255,255,255,.04);
+  border:1px solid var(--border);
+  color:var(--off-white);
+  font-family:'Syne',sans-serif;font-size:.85rem;
+  padding:13px 16px;outline:none;
+  transition:border-color .25s;appearance:none;
+  border-radius:0;
+}
+.form-input:focus,.form-select:focus{border-color:var(--wave-blue);}
+.form-input::placeholder{color:rgba(236,232,225,.2);}
+
+.size-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px;}
+.size-btn{
+  background:rgba(255,255,255,.03);border:1px solid var(--border);
+  color:var(--muted);font-family:'Space Mono',monospace;font-size:.65rem;
+  letter-spacing:.1em;padding:12px 4px;cursor:none;
+  transition:all .2s;text-align:center;
+}
+.size-btn:hover,.size-btn.active{
+  border-color:var(--wave-blue);color:var(--off-white);
+  background:rgba(0,85,255,.15);
+}
+
+.order-btn{
+  margin-top:28px;width:100%;
+  font-family:'Space Mono',monospace;font-size:.7rem;
+  letter-spacing:.2em;text-transform:uppercase;
+  padding:18px;background:var(--wave-blue);
+  color:var(--off-white);border:none;cursor:none;
+  transition:background .3s;position:relative;overflow:hidden;
+}
+.order-btn:hover{background:#0044dd;}
+.order-btn::after{
+  content:'';position:absolute;top:50%;left:50%;
+  width:0;height:0;background:rgba(255,255,255,.1);
+  border-radius:50%;transform:translate(-50%,-50%);
+  transition:width .4s,height .4s;
+}
+.order-btn:active::after{width:300px;height:300px;}
+
+/* Order Success */
+.order-success{
+  display:none;flex-direction:column;align-items:center;
+  justify-content:center;text-align:center;
+  padding:60px 40px;flex:1;
+}
+.success-icon{
+  width:64px;height:64px;border:2px solid var(--wave-cyan);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;margin-bottom:24px;
+  animation:popIn .5s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes popIn{from{transform:scale(0);}to{transform:scale(1);}}
+.success-title{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;margin-bottom:12px;}
+.success-sub{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);line-height:1.7;}
+.success-order-id{
+  font-family:'Space Mono',monospace;font-size:.75rem;
+  letter-spacing:.15em;color:var(--wave-cyan);
+  background:rgba(0,207,255,.06);border:1px solid rgba(0,207,255,.2);
+  padding:12px 24px;margin-top:24px;
+}
+
+/* ── ORDERS TABLE ── */
+.orders-section{padding:80px 48px;background:var(--dark-panel);}
+.orders-table-wrap{overflow-x:auto;margin-top:40px;}
+.orders-table{width:100%;border-collapse:collapse;}
+.orders-table th{
+  font-family:'Space Mono',monospace;font-size:.55rem;
+  letter-spacing:.25em;text-transform:uppercase;
+  color:rgba(236,232,225,.3);text-align:left;
+  padding:12px 16px;border-bottom:1px solid var(--border);
+}
+.orders-table td{
+  padding:16px;border-bottom:1px solid rgba(255,255,255,.03);
+  font-size:.85rem;vertical-align:middle;
+}
+.orders-table tr:hover td{background:rgba(255,255,255,.02);}
+.status-badge{
+  font-family:'Space Mono',monospace;font-size:.5rem;
+  letter-spacing:.15em;text-transform:uppercase;
+  padding:5px 12px;border-radius:20px;
+}
+.status-pending{background:rgba(255,180,0,.1);color:#ffb400;border:1px solid rgba(255,180,0,.2);}
+.status-confirmed{background:rgba(0,85,255,.1);color:var(--wave-cyan);border:1px solid rgba(0,207,255,.2);}
+.status-shipped{background:rgba(0,200,100,.1);color:#00c864;border:1px solid rgba(0,200,100,.2);}
+.empty-orders{
+  text-align:center;padding:60px;
+  font-family:'Space Mono',monospace;font-size:.65rem;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(236,232,225,.2);
+}
+
+/* ── TEAM SECTION ── */
+.team-section{padding:100px 48px;}
+.team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-top:60px;}
+.team-card{
+  background:var(--dark-panel);border:1px solid var(--border);
+  padding:40px 28px;position:relative;overflow:hidden;
+  transition:all .35s ease;
+}
+.team-card::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  transform:scaleX(0);transform-origin:left;transition:transform .35s;
+}
+.team-card.founder-card::after{background:var(--wave-cyan);}
+.team-card.member-card::after{background:var(--wave-blue);}
+.team-card:hover::after{transform:scaleX(1);}
+.team-card:hover{background:#111;}
+
+.team-num{
+  font-family:'Space Mono',monospace;font-size:.5rem;
+  letter-spacing:.2em;color:rgba(236,232,225,.15);
+  margin-bottom:24px;
+}
+.team-role{
+  font-family:'Space Mono',monospace;font-size:.55rem;
+  letter-spacing:.2em;text-transform:uppercase;
+  margin-bottom:10px;
+}
+.founder-card .team-role{color:var(--wave-cyan);}
+.member-card .team-role{color:var(--wave-blue);}
+.team-name{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:2.2rem;letter-spacing:.05em;
+  line-height:1;margin-bottom:12px;
+}
+.team-desc{font-size:.78rem;color:var(--muted);line-height:1.65;}
+
+/* Founder badge */
+.founder-flag{
+  position:absolute;top:16px;right:16px;
+  font-family:'Space Mono',monospace;font-size:.45rem;
+  letter-spacing:.2em;text-transform:uppercase;
+  padding:4px 10px;border:1px solid rgba(0,207,255,.3);
+  color:var(--wave-cyan);background:rgba(0,207,255,.06);
+}
+
+/* ── VIBE SECTION ── */
+.vibe{
+  background:linear-gradient(160deg,#050a1a 0%,var(--black) 100%);
+  padding:120px 48px;position:relative;overflow:hidden;
+}
+.vibe-ghost{
+  position:absolute;font-family:'Bebas Neue',sans-serif;
+  font-size:18rem;color:transparent;
+  -webkit-text-stroke:1px rgba(0,85,255,.06);
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  white-space:nowrap;user-select:none;pointer-events:none;
+  letter-spacing:.05em;
+}
+.vibe-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;position:relative;z-index:1;}
+.vibe-h{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(4rem,9vw,8rem);line-height:.9;
+  margin-bottom:32px;
+}
+.vibe-h em{font-style:normal;color:var(--wave-cyan);}
+.vibe-pills{display:flex;flex-wrap:wrap;gap:10px;margin-top:32px;}
+.pill{
+  font-family:'Space Mono',monospace;font-size:.55rem;
+  letter-spacing:.15em;text-transform:uppercase;
+  padding:9px 18px;border:1px solid var(--border);
+  color:var(--muted);transition:all .25s;
+}
+.pill:hover{border-color:var(--wave-blue);color:var(--off-white);}
+.vibe-items{display:flex;flex-direction:column;gap:28px;}
+.vibe-item{border-left:2px solid var(--wave-blue);padding-left:22px;}
+.vi-key{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--wave-cyan);margin-bottom:6px;}
+.vi-val{font-size:.85rem;color:var(--muted);line-height:1.65;}
+
+/* ── FOOTER ── */
+footer{
+  background:#040404;padding:56px 48px;
+  border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.footer-logo{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:.15em;color:var(--off-white);}
+.footer-logo span{color:var(--wave-cyan);}
+.footer-center{text-align:center;}
+.footer-line{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(236,232,225,.15);}
+.footer-built{
+  font-family:'Space Mono',monospace;font-size:.5rem;
+  letter-spacing:.15em;text-transform:uppercase;
+  color:rgba(236,232,225,.2);margin-top:6px;
+}
+.footer-built strong{color:var(--wave-cyan);}
+.footer-social{display:flex;gap:20px;}
+.social-link{
+  font-family:'Space Mono',monospace;font-size:.55rem;
+  letter-spacing:.15em;text-transform:uppercase;
+  color:var(--muted);text-decoration:none;
+  border-bottom:1px solid transparent;padding-bottom:2px;
+  transition:all .25s;
+}
+.social-link:hover{color:var(--wave-cyan);border-color:var(--wave-cyan);}
+
+/* ── MODAL ── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.85);
+  backdrop-filter:blur(8px);z-index:800;
+  display:none;align-items:center;justify-content:center;
+}
+.modal-overlay.open{display:flex;}
+.modal{
+  background:var(--dark-panel);border:1px solid var(--border);
+  padding:48px;max-width:460px;width:90%;position:relative;
+  animation:modalIn .35s ease;
+}
+@keyframes modalIn{from{opacity:0;transform:scale(.95);}to{opacity:1;transform:scale(1);}}
+.modal-close{
+  position:absolute;top:20px;right:20px;
+  background:none;border:none;color:var(--muted);
+  font-size:1.2rem;cursor:none;transition:color .2s;
+}
+.modal-close:hover{color:var(--off-white);}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;margin-bottom:8px;}
+.modal-sub{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:32px;}
+
+/* Responsive */
+@media(max-width:900px){
+  nav{padding:16px 24px;}
+  .nav-link,.nav-btn{display:none;}
+  .hero{padding:0 24px;}
+  .drop-section,.orders-section,.team-section,.vibe{padding:70px 24px;}
+  .product-showcase,.vibe-grid{grid-template-columns:1fr;}
+  .team-grid{grid-template-columns:1fr 1fr;}
+  footer{flex-direction:column;gap:24px;text-align:center;padding:40px 24px;}
+}
+@media(max-width:600px){
+  .team-grid{grid-template-columns:1fr;}
+}
+
+/* Scroll reveal */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+
+<div class="cur" id="cur"></div>
+<div class="cur-ring" id="curRing"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">
+    <div class="logo-wrap">
+      <span>WAVE</span>
+      <span class="logo-sub">Prado Clothing</span>
+    </div>
+  </a>
+  <div class="nav-r">
+    <a href="#drop" class="nav-link">Drop 001</a>
+    <a href="#order" class="nav-link">Order</a>
+    <a href="#team" class="nav-link">The Team</a>
+    <a href="#order" class="nav-btn">Order Now</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="scanline"></div>
+
+  <div class="hero-label">— Cairo, Egypt · Prado Clothing · Est. 2025</div>
+  <h1 class="hero-h1">
+    <div>RIDE</div>
+    <div class="outline">THE</div>
+    <div class="cyan">WAVE</div>
+  </h1>
+
+  <div class="hero-drop-badge">
+    <div class="badge-dot"></div>
+    WAVE 001: RIDE THE WAVE — Now Accepting Orders
+  </div>
+
+  <p class="hero-sub">A sweatshirt isn't just fabric. It's a statement. WAVE doesn't follow trends — it sets the frequency.</p>
+
+  <div class="hero-actions">
+    <a href="#order" class="btn-main">Order Now</a>
+    <a href="#drop" class="btn-ghost">See the Drop →</a>
+  </div>
+
+  <div class="hero-ghost">001</div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-t">
+    <span class="t-item">WAVE <span class="t-sep">◆</span></span>
+    <span class="t-item">PRADO CLOTHING <span class="t-sep">◆</span></span>
+    <span class="t-item">RIDE THE WAVE <span class="t-sep">◆</span></span>
+    <span class="t-item">CAIRO ORIGINALS <span class="t-sep">◆</span></span>
+    <span class="t-item">DROP 001 <span class="t-sep">◆</span></span>
+    <span class="t-item">YOU ARE NOT READY <span class="t-sep">◆</span></span>
+    <span class="t-item">WAVE <span class="t-sep">◆</span></span>
+    <span class="t-item">PRADO CLOTHING <span class="t-sep">◆</span></span>
+    <span class="t-item">RIDE THE WAVE <span class="t-sep">◆</span></span>
+    <span class="t-item">CAIRO ORIGINALS <span class="t-sep">◆</span></span>
+    <span class="t-item">DROP 001 <span class="t-sep">◆</span></span>
+    <span class="t-item">YOU ARE NOT READY <span class="t-sep">◆</span></span>
+  </div>
+</div>
+
+<!-- DROP 001 -->
+<section class="drop-section" id="drop">
+  <div class="sec-label reveal">— 001 / First Drop</div>
+  <h2 class="sec-title reveal">WAVE 001:<br>RIDE THE<br>WAVE</h2>
+
+  <div class="product-showcase">
+
+    <!-- Product Visual + Info -->
+    <div class="product-main reveal">
+      <div class="hoodie-art">
+        <svg class="hoodie-svg-wrap" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+          <!-- Glow -->
+          <defs>
+            <radialGradient id="hg" cx="50%" cy="40%" r="50%">
+              <stop offset="0%" stop-color="#0055ff" stop-opacity=".2"/>
+              <stop offset="100%" stop-color="#0055ff" stop-opacity="0"/>
+            </radialGradient>
+            <linearGradient id="hbody" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#2a2a2a"/>
+              <stop offset="100%" stop-color="#161616"/>
+            </linearGradient>
+            <linearGradient id="hhood" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#1e1e1e"/>
+              <stop offset="100%" stop-color="#111"/>
+            </linearGradient>
+          </defs>
+          <ellipse cx="200" cy="200" rx="180" ry="180" fill="url(#hg)"/>
+          <!-- Body -->
+          <path d="M80,180 L60,360 L340,360 L320,180 L280,160 L280,180 Q200,220 120,180 L120,160 Z"
+            fill="url(#hbody)" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+          <!-- Sleeves -->
+          <path d="M80,180 L30,260 L70,270 L120,180" fill="#1e1e1e" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+          <path d="M320,180 L370,260 L330,270 L280,180" fill="#1e1e1e" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+          <!-- Hood outer -->
+          <path d="M120,160 Q120,60 200,50 Q280,60 280,160" fill="url(#hhood)" stroke="rgba(255,255,255,.07)" stroke-width="1"/>
+          <!-- Hood inner opening -->
+          <ellipse cx="200" cy="140" rx="44" ry="52" fill="#0a0a0a"/>
+          <!-- Drawstrings -->
+          <line x1="186" y1="175" x2="178" y2="270" stroke="rgba(255,255,255,.2)" stroke-width="2.5"/>
+          <line x1="214" y1="175" x2="222" y2="270" stroke="rgba(255,255,255,.2)" stroke-width="2.5"/>
+          <!-- Drawstring tips -->
+          <ellipse cx="178" cy="274" rx="4" ry="7" fill="rgba(255,255,255,.25)"/>
+          <ellipse cx="222" cy="274" rx="4" ry="7" fill="rgba(255,255,255,.25)"/>
+          <!-- Pocket -->
+          <path d="M152,280 Q200,275 248,280 L248,330 Q200,340 152,330 Z" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.07)" stroke-width="1"/>
+          <!-- Front WAVE text -->
+          <text x="200" y="230" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="32" fill="rgba(0,207,255,.6)" letter-spacing="4">WAVE</text>
+          <!-- Wave line decoration -->
+          <path d="M140,245 Q160,238 180,245 Q200,252 220,245 Q240,238 260,245" stroke="rgba(0,85,255,.4)" stroke-width="1.5" fill="none"/>
+        </svg>
+      </div>
+
+      <div class="drop-name">Drop 001 · Design 3 (Heavy)</div>
+      <div class="product-title">RIDE THE WAVE</div>
+      <div class="product-design">Oversized Hoodie · Limited Units</div>
+
+      <div class="detail-row">
+        <div class="detail-item">
+          <div class="detail-key">Material</div>
+          <div class="detail-val">380gsm Fleece</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-key">Fit</div>
+          <div class="detail-val">Oversized</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-key">Drop</div>
+          <div class="detail-val">Limited</div>
+        </div>
+      </div>
+
+      <!-- Front / Back flip -->
+      <div class="flip-area">
+        <div class="flip-inner" id="flipCard">
+          <div class="flip-face">
+            <div class="flip-label">Front Print</div>
+            <div class="flip-text">WAVE</div>
+          </div>
+          <div class="flip-back">
+            <div class="flip-label">Back Print</div>
+            <div class="flip-text back-text">"YOU ARE NOT READY<br>FOR THIS WAVE"</div>
+          </div>
+        </div>
+      </div>
+      <button class="flip-toggle" id="flipBtn">
+        <span>↻</span> See Back Print
+      </button>
+    </div>
+
+    <!-- ORDER FORM -->
+    <div class="order-panel" id="order">
+      <div id="orderFormWrap">
+        <div class="op-title">Place Your Order</div>
+        <div class="op-sub">Wave 001 · Prado Clothing</div>
+
+        <div class="form-field">
+          <label class="form-label">Full Name</label>
+          <input class="form-input" type="text" placeholder="Your name" id="inp-name">
+        </div>
+        <div class="form-field">
+          <label class="form-label">Phone Number</label>
+          <input class="form-input" type="tel" placeholder="01xxxxxxxxx" id="inp-phone">
+        </div>
+        <div class="form-field">
+          <label class="form-label">City / Area</label>
+          <input class="form-input" type="text" placeholder="e.g. Cairo, El Shorouk..." id="inp-city">
+        </div>
+        <div class="form-field">
+          <label class="form-label">Select Size</label>
+          <div class="size-grid" id="sizeGrid">
+            <div class="size-btn" data-size="S">S</div>
+            <div class="size-btn" data-size="M">M</div>
+            <div class="size-btn" data-size="L">L</div>
+            <div class="size-btn" data-size="XL">XL</div>
+            <div class="size-btn" data-size="XXL">XXL</div>
+            <div class="size-btn" data-size="3XL">3XL</div>
+          </div>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Quantity</label>
+          <select class="form-select" id="inp-qty">
+            <option value="1">1 piece</option>
+            <option value="2">2 pieces</option>
+            <option value="3">3 pieces</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Notes (optional)</label>
+          <input class="form-input" type="text" placeholder="Any special requests..." id="inp-notes">
+        </div>
+
+        <button class="order-btn" id="orderBtn">Confirm Order →</button>
+      </div>
+
+      <div class="order-success" id="orderSuccess">
+        <div class="success-icon">✓</div>
+        <div class="success-title">ORDER PLACED</div>
+        <div class="success-sub">
+          Thank you for riding the wave.<br>
+          The team will contact you soon.<br><br>
+          Cairo, Egypt · Prado Clothing
+        </div>
+        <div class="success-order-id" id="orderIdDisplay"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ORDERS TABLE -->
+<section class="orders-section" id="orders">
+  <div class="sec-label reveal">— Orders Log</div>
+  <h2 class="sec-title reveal" style="font-size:clamp(2rem,5vw,4rem);margin-bottom:0;">All Orders</h2>
+
+  <div class="orders-table-wrap">
+    <table class="orders-table">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>City</th>
+          <th>Size</th>
+          <th>Qty</th>
+          <th>Status</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="ordersBody">
+        <tr><td colspan="8" class="empty-orders">No orders yet — be the first to ride the wave.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section class="team-section" id="team">
+  <div class="sec-label reveal">— The Crew</div>
+  <h2 class="sec-title reveal">THE<br>TEAM</h2>
+  <div class="team-grid">
+    <div class="team-card founder-card reveal">
+      <div class="founder-flag">Founder</div>
+      <div class="team-num">01</div>
+      <div class="team-role">Founder · Lead · Visionary</div>
+      <div class="team-name">OMAR</div>
+      <div class="team-desc">The one who had the idea before anyone else. Brought the name, the direction, and the vision. WAVE wouldn't exist without this guy.</div>
+    </div>
+    <div class="team-card member-card reveal">
+      <div class="team-num">02</div>
+      <div class="team-role">Co-Founder · Team</div>
+      <div class="team-name">ADHAM</div>
+      <div class="team-desc">Part of the core crew since day one. Helping build the brand from the ground up.</div>
+    </div>
+    <div class="team-card member-card reveal">
+      <div class="team-num">03</div>
+      <div class="team-role">Co-Founder · Team</div>
+      <div class="team-name">EYAD</div>
+      <div class="team-desc">Riding the wave from the start. A key piece in making WAVE what it is.</div>
+    </div>
+    <div class="team-card member-card reveal">
+      <div class="team-num">04</div>
+      <div class="team-role">Co-Founder · Team</div>
+      <div class="team-name">MOSTAFA</div>
+      <div class="team-desc">Committed to the movement. Part of the wave that can't be stopped.</div>
+    </div>
+  </div>
+</section>
+
+<!-- VIBE -->
+<section class="vibe" id="vibe">
+  <div class="vibe-ghost">WAVE</div>
+  <div class="sec-label" style="position:relative;z-index:1;" >— Brand Identity</div>
+  <div class="vibe-grid">
+    <div class="vibe-left">
+      <h2 class="vibe-h">CALM.<br><em>BOLD.</em><br>DIFFERENT.</h2>
+      <p style="font-size:.85rem;color:var(--muted);line-height:1.7;max-width:360px;">Not aggressive. Not shy. WAVE occupies its own space — confident without screaming, subtle without disappearing.</p>
+      <div class="vibe-pills">
+        <div class="pill">Streetwear</div>
+        <div class="pill">Limited Drops</div>
+        <div class="pill">Cairo Made</div>
+        <div class="pill">380gsm Heavy</div>
+        <div class="pill">Oversized</div>
+        <div class="pill">Editorial</div>
+      </div>
+    </div>
+    <div class="vibe-items">
+      <div class="vibe-item">
+        <div class="vi-key">Tone of Voice</div>
+        <div class="vi-val">Minimal captions. Powerful images. Short, sharp copy that never tries too hard.</div>
+      </div>
+      <div class="vibe-item">
+        <div class="vi-key">Photography</div>
+        <div class="vi-val">Moody natural light. Models at angles — never cheesy smiling shots. Always cinematic.</div>
+      </div>
+      <div class="vibe-item">
+        <div class="vi-key">The Feeling</div>
+        <div class="vi-val">Like a drop you found before everyone else. Like you already knew.</div>
+      </div>
+      <div class="vibe-item">
+        <div class="vi-key">Colors</div>
+        <div class="vi-val">Void Black · Deep Ocean · Wave Blue · Signal Cyan · Parchment White</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">WAV<span>E</span></div>
+  <div class="footer-center">
+    <div class="footer-line">© 2025 Wave · Prado Clothing · Cairo, Egypt</div>
+    <div class="footer-built">Built by <strong>Omar Ahmed</strong> · Founder</div>
+  </div>
+  <div class="footer-social">
+    <a href="https://omarahameds2010-lab.github.io/omar-os/" target="_blank" class="social-link">Portfolio ↗</a>
+    <a href="#order" class="social-link">Order Now ↗</a>
+  </div>
+</footer>
+
+<script>
+// ── CURSOR ──
+const cur = document.getElementById('cur');
+const ring = document.getElementById('curRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  cur.style.left=(mx-5)+'px';cur.style.top=(my-5)+'px';
+});
+(function anim(){
+  rx+=(mx-rx-18)*.13;ry+=(my-ry-18)*.13;
+  ring.style.left=rx+'px';ring.style.top=ry+'px';
+  requestAnimationFrame(anim);
+})();
+document.querySelectorAll('a,button,.size-btn,.team-card,.swatch,.pill').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.transform='scale(2.5)';ring.style.transform='scale(1.4)';});
+  el.addEventListener('mouseleave',()=>{cur.style.transform='scale(1)';ring.style.transform='scale(1)';});
+});
+
+// ── SCROLL REVEAL ──
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersecting){
+      setTimeout(()=>e.target.classList.add('visible'),i*90);
+      obs.unobserve(e.target);
+    }
+  });
+},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// ── SIZE SELECTION ──
+let selectedSize='';
+document.querySelectorAll('.size-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedSize=btn.dataset.size;
+  });
+});
+
+// ── FLIP CARD ──
+const flipCard=document.getElementById('flipCard');
+const flipBtn=document.getElementById('flipBtn');
+let flipped=false;
+flipBtn.addEventListener('click',()=>{
+  flipped=!flipped;
+  flipCard.classList.toggle('flipped',flipped);
+  flipBtn.innerHTML=flipped?'<span>↻</span> See Front Print':'<span>↻</span> See Back Print';
+});
+
+// ── ORDERS STORAGE ──
+function getOrders(){return JSON.parse(localStorage.getItem('wave_orders')||'[]');}
+function saveOrders(orders){localStorage.setItem('wave_orders',JSON.stringify(orders));}
+
+function renderOrders(){
+  const orders=getOrders();
+  const tbody=document.getElementById('ordersBody');
+  if(orders.length===0){
+    tbody.innerHTML='<tr><td colspan="8" class="empty-orders">No orders yet — be the first to ride the wave.</td></tr>';
+    return;
+  }
+  tbody.innerHTML=orders.map(o=>`
+    <tr>
+      <td style="font-family:'Space Mono',monospace;font-size:.65rem;color:var(--wave-cyan);">${o.id}</td>
+      <td>${o.name}</td>
+      <td style="font-family:'Space Mono',monospace;font-size:.7rem;">${o.phone}</td>
+      <td>${o.city}</td>
+      <td style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;">${o.size}</td>
+      <td>${o.qty}</td>
+      <td><span class="status-badge status-${o.status.toLowerCase()}">${o.status}</span></td>
+      <td style="font-family:'Space Mono',monospace;font-size:.55rem;color:var(--muted);">${o.date}</td>
+    </tr>
+  `).join('');
+}
+
+// ── ORDER SUBMISSION ──
+document.getElementById('orderBtn').addEventListener('click',()=>{
+  const name=document.getElementById('inp-name').value.trim();
+  const phone=document.getElementById('inp-phone').value.trim();
+  const city=document.getElementById('inp-city').value.trim();
+  const qty=document.getElementById('inp-qty').value;
+  const notes=document.getElementById('inp-notes').value.trim();
+
+  if(!name||!phone||!city||!selectedSize){
+    // Shake validation
+    ['inp-name','inp-phone','inp-city'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(!el.value.trim()){el.style.borderColor='#ff4444';setTimeout(()=>el.style.borderColor='',1500);}
+    });
+    if(!selectedSize){
+      document.getElementById('sizeGrid').style.outline='1px solid #ff4444';
+      setTimeout(()=>document.getElementById('sizeGrid').style.outline='',1500);
+    }
+    return;
+  }
+
+  const orders=getOrders();
+  const orderId='WV-'+Date.now().toString().slice(-6);
+  const now=new Date();
+  const dateStr=now.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+
+  orders.unshift({
+    id:orderId,name,phone,city,
+    size:selectedSize,qty,notes,
+    status:'Pending',date:dateStr
+  });
+  saveOrders(orders);
+  renderOrders();
+
+  // Show success
+  document.getElementById('orderFormWrap').style.display='none';
+  const succ=document.getElementById('orderSuccess');
+  succ.style.display='flex';
+  document.getElementById('orderIdDisplay').textContent='Order ID: '+orderId;
+});
+
+renderOrders();
+</script>
+</body>
+</html>
