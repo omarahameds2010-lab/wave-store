@@ -15,7 +15,7 @@
   --border: rgba(255,255,255,0.07);
   --muted: rgba(236,232,225,0.4);
 }
-
+ 
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{
@@ -25,19 +25,19 @@ body{
   overflow-x:hidden;
   cursor:none;
 }
-
+ 
 /* ── CURSOR ── */
 .cur{width:10px;height:10px;background:var(--wave-cyan);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:99999;transition:transform .15s;}
 .cur-ring{width:36px;height:36px;border:1px solid rgba(0,207,255,.5);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:99998;transition:all .12s ease;}
 body:has(a:hover) .cur,.cur.hover{transform:scale(3);}
-
+ 
 /* ── NOISE ── */
 body::after{
   content:'';position:fixed;inset:0;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");
   pointer-events:none;z-index:9990;
 }
-
+ 
 /* ── NAV ── */
 nav{
   position:fixed;top:0;left:0;right:0;z-index:500;
@@ -76,7 +76,7 @@ nav{
   cursor:none;text-decoration:none;transition:all .3s;
 }
 .nav-btn:hover{background:var(--wave-blue);color:var(--off-white);}
-
+ 
 /* ── HERO ── */
 .hero{
   min-height:100vh;display:flex;flex-direction:column;
@@ -95,7 +95,7 @@ nav{
   animation:scan 6s linear infinite;z-index:1;
 }
 @keyframes scan{to{top:110%;}}
-
+ 
 .hero-label{
   font-family:'Space Mono',monospace;font-size:.6rem;
   letter-spacing:.35em;text-transform:uppercase;
@@ -115,7 +115,7 @@ nav{
   -webkit-text-stroke:1.5px rgba(0,85,255,.7);
 }
 .hero-h1 .cyan{color:var(--wave-cyan);}
-
+ 
 .hero-drop-badge{
   display:inline-flex;align-items:center;gap:12px;
   background:rgba(0,85,255,.1);
@@ -133,7 +133,7 @@ nav{
   animation:pulse 1.5s ease-in-out infinite;
 }
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.7);}}
-
+ 
 .hero-sub{
   font-size:.95rem;color:var(--muted);line-height:1.7;
   max-width:380px;margin-top:28px;
@@ -163,7 +163,7 @@ nav{
   padding-bottom:3px;transition:color .3s,border-color .3s;
 }
 .btn-ghost:hover{color:var(--off-white);border-color:var(--off-white);}
-
+ 
 /* Big ghost number */
 .hero-ghost{
   position:absolute;right:40px;bottom:-20px;
@@ -172,21 +172,21 @@ nav{
   user-select:none;pointer-events:none;z-index:1;
   letter-spacing:-.02em;
 }
-
+ 
 @keyframes up{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:translateY(0);}}
-
+ 
 /* ── TICKER ── */
 .ticker{background:var(--wave-blue);padding:13px 0;overflow:hidden;border-top:1px solid rgba(0,207,255,.2);border-bottom:1px solid rgba(0,207,255,.2);}
 .ticker-t{display:flex;animation:tick 22s linear infinite;white-space:nowrap;}
 .t-item{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.15em;padding:0 36px;flex-shrink:0;}
 .t-sep{color:rgba(236,232,225,.4);margin:0 4px;}
 @keyframes tick{from{transform:translateX(0);}to{transform:translateX(-50%);}}
-
+ 
 /* ── DROP 001 ── */
 .drop-section{padding:100px 48px;position:relative;overflow:hidden;}
 .sec-label{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.35em;text-transform:uppercase;color:var(--wave-cyan);margin-bottom:14px;}
 .sec-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(3.5rem,9vw,8rem);line-height:.9;margin-bottom:56px;}
-
+ 
 /* Product card — flip on hover */
 .product-showcase{display:grid;grid-template-columns:1fr 1fr;gap:2px;}
 .product-main{
@@ -207,7 +207,7 @@ nav{
   display:flex;align-items:center;justify-content:center;
 }
 .hoodie-svg-wrap{width:100%;height:100%;opacity:.85;}
-
+ 
 .product-info{}
 .drop-name{
   font-family:'Space Mono',monospace;font-size:.58rem;
@@ -228,7 +228,7 @@ nav{
 .detail-item{}
 .detail-key{font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(236,232,225,.25);margin-bottom:4px;}
 .detail-val{font-size:.85rem;font-weight:600;}
-
+ 
 /* Flip card for front/back */
 .flip-area{perspective:1000px;margin-bottom:32px;}
 .flip-inner{
@@ -260,7 +260,7 @@ nav{
 .flip-toggle:hover{color:var(--wave-cyan);}
 .flip-toggle span{display:inline-block;transition:transform .3s;}
 .flip-toggle:hover span{transform:rotate(180deg);}
-
+ 
 /* Order form panel */
 .order-panel{
   background:var(--dark-panel);border:1px solid var(--border);
@@ -268,7 +268,7 @@ nav{
 }
 .op-title{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.05em;margin-bottom:8px;}
 .op-sub{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:36px;}
-
+ 
 .form-field{margin-bottom:20px;}
 .form-label{
   font-family:'Space Mono',monospace;font-size:.55rem;
@@ -286,7 +286,20 @@ nav{
 }
 .form-input:focus,.form-select:focus{border-color:var(--wave-blue);}
 .form-input::placeholder{color:rgba(236,232,225,.2);}
-
+ 
+/* Color picker */
+.color-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px;}
+.color-btn{
+  background:rgba(255,255,255,.03);border:1px solid var(--border);
+  padding:10px 6px;cursor:none;transition:all .2s;
+  display:flex;flex-direction:column;align-items:center;gap:7px;
+}
+.color-swatch{width:32px;height:32px;border-radius:50%;}
+.color-btn span{font-family:'Space Mono',monospace;font-size:.45rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:center;}
+.color-btn:hover,.color-btn.active{border-color:var(--wave-cyan);}
+.color-btn.active .color-swatch{box-shadow:0 0 0 2px var(--wave-cyan);}
+.color-btn.active span{color:var(--off-white);}
+ 
 .size-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px;}
 .size-btn{
   background:rgba(255,255,255,.03);border:1px solid var(--border);
@@ -298,7 +311,7 @@ nav{
   border-color:var(--wave-blue);color:var(--off-white);
   background:rgba(0,85,255,.15);
 }
-
+ 
 .order-btn{
   margin-top:28px;width:100%;
   font-family:'Space Mono',monospace;font-size:.7rem;
@@ -315,7 +328,7 @@ nav{
   transition:width .4s,height .4s;
 }
 .order-btn:active::after{width:300px;height:300px;}
-
+ 
 /* Order Success */
 .order-success{
   display:none;flex-direction:column;align-items:center;
@@ -337,7 +350,7 @@ nav{
   background:rgba(0,207,255,.06);border:1px solid rgba(0,207,255,.2);
   padding:12px 24px;margin-top:24px;
 }
-
+ 
 /* ── ORDERS TABLE ── */
 .orders-section{padding:80px 48px;background:var(--dark-panel);}
 .orders-table-wrap{overflow-x:auto;margin-top:40px;}
@@ -367,7 +380,7 @@ nav{
   letter-spacing:.2em;text-transform:uppercase;
   color:rgba(236,232,225,.2);
 }
-
+ 
 /* ── TEAM SECTION ── */
 .team-section{padding:100px 48px;}
 .team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-top:60px;}
@@ -384,7 +397,7 @@ nav{
 .team-card.member-card::after{background:var(--wave-blue);}
 .team-card:hover::after{transform:scaleX(1);}
 .team-card:hover{background:#111;}
-
+ 
 .team-num{
   font-family:'Space Mono',monospace;font-size:.5rem;
   letter-spacing:.2em;color:rgba(236,232,225,.15);
@@ -403,7 +416,7 @@ nav{
   line-height:1;margin-bottom:12px;
 }
 .team-desc{font-size:.78rem;color:var(--muted);line-height:1.65;}
-
+ 
 /* Founder badge */
 .founder-flag{
   position:absolute;top:16px;right:16px;
@@ -412,7 +425,7 @@ nav{
   padding:4px 10px;border:1px solid rgba(0,207,255,.3);
   color:var(--wave-cyan);background:rgba(0,207,255,.06);
 }
-
+ 
 /* ── VIBE SECTION ── */
 .vibe{
   background:linear-gradient(160deg,#050a1a 0%,var(--black) 100%);
@@ -445,7 +458,7 @@ nav{
 .vibe-item{border-left:2px solid var(--wave-blue);padding-left:22px;}
 .vi-key{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--wave-cyan);margin-bottom:6px;}
 .vi-val{font-size:.85rem;color:var(--muted);line-height:1.65;}
-
+ 
 /* ── FOOTER ── */
 footer{
   background:#040404;padding:56px 48px;
@@ -471,7 +484,7 @@ footer{
   transition:all .25s;
 }
 .social-link:hover{color:var(--wave-cyan);border-color:var(--wave-cyan);}
-
+ 
 /* ── MODAL ── */
 .modal-overlay{
   position:fixed;inset:0;background:rgba(0,0,0,.85);
@@ -493,7 +506,7 @@ footer{
 .modal-close:hover{color:var(--off-white);}
 .modal-title{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;margin-bottom:8px;}
 .modal-sub{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:32px;}
-
+ 
 /* Responsive */
 @media(max-width:900px){
   nav{padding:16px 24px;}
@@ -507,17 +520,17 @@ footer{
 @media(max-width:600px){
   .team-grid{grid-template-columns:1fr;}
 }
-
+ 
 /* Scroll reveal */
 .reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease;}
 .reveal.visible{opacity:1;transform:translateY(0);}
 </style>
 </head>
 <body>
-
+ 
 <div class="cur" id="cur"></div>
 <div class="cur-ring" id="curRing"></div>
-
+ 
 <!-- NAV -->
 <nav>
   <a href="#" class="logo">
@@ -533,34 +546,34 @@ footer{
     <a href="#order" class="nav-btn">Order Now</a>
   </div>
 </nav>
-
+ 
 <!-- HERO -->
 <section class="hero" id="home">
   <div class="hero-bg"></div>
   <div class="scanline"></div>
-
+ 
   <div class="hero-label">— Cairo, Egypt · Prado Clothing · Est. 2025</div>
   <h1 class="hero-h1">
     <div>RIDE</div>
     <div class="outline">THE</div>
     <div class="cyan">WAVE</div>
   </h1>
-
+ 
   <div class="hero-drop-badge">
     <div class="badge-dot"></div>
     WAVE 001: RIDE THE WAVE — Now Accepting Orders
   </div>
-
+ 
   <p class="hero-sub">A sweatshirt isn't just fabric. It's a statement. WAVE doesn't follow trends — it sets the frequency.</p>
-
+ 
   <div class="hero-actions">
     <a href="#order" class="btn-main">Order Now</a>
     <a href="#drop" class="btn-ghost">See the Drop →</a>
   </div>
-
+ 
   <div class="hero-ghost">001</div>
 </section>
-
+ 
 <!-- TICKER -->
 <div class="ticker">
   <div class="ticker-t">
@@ -578,14 +591,14 @@ footer{
     <span class="t-item">YOU ARE NOT READY <span class="t-sep">◆</span></span>
   </div>
 </div>
-
+ 
 <!-- DROP 001 -->
 <section class="drop-section" id="drop">
   <div class="sec-label reveal">— 001 / First Drop</div>
   <h2 class="sec-title reveal">WAVE 001:<br>RIDE THE<br>WAVE</h2>
-
+ 
   <div class="product-showcase">
-
+ 
     <!-- Product Visual + Info -->
     <div class="product-main reveal">
       <div class="hoodie-art">
@@ -630,11 +643,11 @@ footer{
           <path d="M140,245 Q160,238 180,245 Q200,252 220,245 Q240,238 260,245" stroke="rgba(0,85,255,.4)" stroke-width="1.5" fill="none"/>
         </svg>
       </div>
-
+ 
       <div class="drop-name">Drop 001 · Design 3 (Heavy)</div>
       <div class="product-title">RIDE THE WAVE</div>
       <div class="product-design">Oversized Hoodie · Limited Units</div>
-
+ 
       <div class="detail-row">
         <div class="detail-item">
           <div class="detail-key">Material</div>
@@ -649,7 +662,7 @@ footer{
           <div class="detail-val">Limited</div>
         </div>
       </div>
-
+ 
       <!-- Front / Back flip -->
       <div class="flip-area">
         <div class="flip-inner" id="flipCard">
@@ -667,13 +680,13 @@ footer{
         <span>↻</span> See Back Print
       </button>
     </div>
-
+ 
     <!-- ORDER FORM -->
     <div class="order-panel" id="order">
       <div id="orderFormWrap">
         <div class="op-title">Place Your Order</div>
         <div class="op-sub">Wave 001 · Prado Clothing</div>
-
+ 
         <div class="form-field">
           <label class="form-label">Full Name</label>
           <input class="form-input" type="text" placeholder="Your name" id="inp-name">
@@ -686,6 +699,28 @@ footer{
           <label class="form-label">City / Area</label>
           <input class="form-input" type="text" placeholder="e.g. Cairo, El Shorouk..." id="inp-city">
         </div>
+        <div class="form-field">
+          <label class="form-label">Select Color</label>
+          <div class="color-grid" id="colorGrid">
+            <div class="color-btn" data-color="Black">
+              <div class="color-swatch" style="background:#111;border:1px solid rgba(255,255,255,.15);"></div>
+              <span>Black</span>
+            </div>
+            <div class="color-btn" data-color="White">
+              <div class="color-swatch" style="background:#f0ede8;"></div>
+              <span>White</span>
+            </div>
+            <div class="color-btn" data-color="Navy">
+              <div class="color-swatch" style="background:#0a1628;border:1px solid rgba(255,255,255,.1);"></div>
+              <span>Navy</span>
+            </div>
+            <div class="color-btn" data-color="Ash Grey">
+              <div class="color-swatch" style="background:#9a9a9a;"></div>
+              <span>Ash Grey</span>
+            </div>
+          </div>
+        </div>
+ 
         <div class="form-field">
           <label class="form-label">Select Size</label>
           <div class="size-grid" id="sizeGrid">
@@ -709,10 +744,10 @@ footer{
           <label class="form-label">Notes (optional)</label>
           <input class="form-input" type="text" placeholder="Any special requests..." id="inp-notes">
         </div>
-
+ 
         <button class="order-btn" id="orderBtn">Confirm Order →</button>
       </div>
-
+ 
       <div class="order-success" id="orderSuccess">
         <div class="success-icon">✓</div>
         <div class="success-title">ORDER PLACED</div>
@@ -726,12 +761,12 @@ footer{
     </div>
   </div>
 </section>
-
+ 
 <!-- ORDERS TABLE -->
 <section class="orders-section" id="orders">
   <div class="sec-label reveal">— Orders Log</div>
   <h2 class="sec-title reveal" style="font-size:clamp(2rem,5vw,4rem);margin-bottom:0;">All Orders</h2>
-
+ 
   <div class="orders-table-wrap">
     <table class="orders-table">
       <thead>
@@ -740,6 +775,7 @@ footer{
           <th>Name</th>
           <th>Phone</th>
           <th>City</th>
+          <th>Color</th>
           <th>Size</th>
           <th>Qty</th>
           <th>Status</th>
@@ -747,12 +783,12 @@ footer{
         </tr>
       </thead>
       <tbody id="ordersBody">
-        <tr><td colspan="8" class="empty-orders">No orders yet — be the first to ride the wave.</td></tr>
+        <tr><td colspan="9" class="empty-orders">No orders yet — be the first to ride the wave.</td></tr>
       </tbody>
     </table>
   </div>
 </section>
-
+ 
 <!-- TEAM -->
 <section class="team-section" id="team">
   <div class="sec-label reveal">— The Crew</div>
@@ -763,29 +799,29 @@ footer{
       <div class="team-num">01</div>
       <div class="team-role">Founder · Lead · Visionary</div>
       <div class="team-name">OMAR</div>
-      <div class="team-desc">The one who had the idea before anyone else. , the direction, and the vision. WAVE wouldn't exist without this guy.</div>
+      <div class="team-desc">The one who had the idea before anyone else. Brought the name, the direction, and the vision. WAVE wouldn't exist without this guy.</div>
     </div>
     <div class="team-card member-card reveal">
       <div class="team-num">02</div>
       <div class="team-role">Co-Founder · Team</div>
       <div class="team-name">ADHAM</div>
-      <div class="team-desc">Part of the core crew since day one.Brought the name, Helping build the brand from the ground up.</div>
+      <div class="team-desc">Part of the core crew since day one. Helping build the brand from the ground up.</div>
     </div>
     <div class="team-card member-card reveal">
       <div class="team-num">03</div>
       <div class="team-role">Co-Founder · Team</div>
       <div class="team-name">EYAD</div>
-      <div class="team-desc">Riding the wave from the start, A key piece in making WAVE what it is,He is a very clever man,desined the logo .</div>
+      <div class="team-desc">Riding the wave from the start. A key piece in making WAVE what it is.</div>
     </div>
     <div class="team-card member-card reveal">
       <div class="team-num">04</div>
       <div class="team-role">Co-Founder · Team</div>
       <div class="team-name">MOSTAFA</div>
-      <div class="team-desc">Committed to the movement. Part of the wave that can't be stopped,mostafa is the Markting Man.</div>
+      <div class="team-desc">Committed to the movement. Part of the wave that can't be stopped.</div>
     </div>
   </div>
 </section>
-
+ 
 <!-- VIBE -->
 <section class="vibe" id="vibe">
   <div class="vibe-ghost">WAVE</div>
@@ -823,7 +859,7 @@ footer{
     </div>
   </div>
 </section>
-
+ 
 <!-- FOOTER -->
 <footer>
   <div class="footer-logo">WAV<span>E</span></div>
@@ -836,7 +872,7 @@ footer{
     <a href="#order" class="social-link">Order Now ↗</a>
   </div>
 </footer>
-
+ 
 <script>
 // ── CURSOR ──
 const cur = document.getElementById('cur');
@@ -855,7 +891,7 @@ document.querySelectorAll('a,button,.size-btn,.team-card,.swatch,.pill').forEach
   el.addEventListener('mouseenter',()=>{cur.style.transform='scale(2.5)';ring.style.transform='scale(1.4)';});
   el.addEventListener('mouseleave',()=>{cur.style.transform='scale(1)';ring.style.transform='scale(1)';});
 });
-
+ 
 // ── SCROLL REVEAL ──
 const obs=new IntersectionObserver(entries=>{
   entries.forEach((e,i)=>{
@@ -866,7 +902,17 @@ const obs=new IntersectionObserver(entries=>{
   });
 },{threshold:.1});
 document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
-
+ 
+// ── COLOR SELECTION ──
+let selectedColor='';
+document.querySelectorAll('.color-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.color-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedColor=btn.dataset.color;
+  });
+});
+ 
 // ── SIZE SELECTION ──
 let selectedSize='';
 document.querySelectorAll('.size-btn').forEach(btn=>{
@@ -876,7 +922,7 @@ document.querySelectorAll('.size-btn').forEach(btn=>{
     selectedSize=btn.dataset.size;
   });
 });
-
+ 
 // ── FLIP CARD ──
 const flipCard=document.getElementById('flipCard');
 const flipBtn=document.getElementById('flipBtn');
@@ -886,11 +932,11 @@ flipBtn.addEventListener('click',()=>{
   flipCard.classList.toggle('flipped',flipped);
   flipBtn.innerHTML=flipped?'<span>↻</span> See Front Print':'<span>↻</span> See Back Print';
 });
-
+ 
 // ── ORDERS STORAGE ──
 function getOrders(){return JSON.parse(localStorage.getItem('wave_orders')||'[]');}
 function saveOrders(orders){localStorage.setItem('wave_orders',JSON.stringify(orders));}
-
+ 
 function renderOrders(){
   const orders=getOrders();
   const tbody=document.getElementById('ordersBody');
@@ -904,6 +950,7 @@ function renderOrders(){
       <td>${o.name}</td>
       <td style="font-family:'Space Mono',monospace;font-size:.7rem;">${o.phone}</td>
       <td>${o.city}</td>
+      <td>${o.color||'—'}</td>
       <td style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;">${o.size}</td>
       <td>${o.qty}</td>
       <td><span class="status-badge status-${o.status.toLowerCase()}">${o.status}</span></td>
@@ -911,7 +958,7 @@ function renderOrders(){
     </tr>
   `).join('');
 }
-
+ 
 // ── ORDER SUBMISSION ──
 document.getElementById('orderBtn').addEventListener('click',()=>{
   const name=document.getElementById('inp-name').value.trim();
@@ -919,9 +966,8 @@ document.getElementById('orderBtn').addEventListener('click',()=>{
   const city=document.getElementById('inp-city').value.trim();
   const qty=document.getElementById('inp-qty').value;
   const notes=document.getElementById('inp-notes').value.trim();
-
-  if(!name||!phone||!city||!selectedSize){
-    // Shake validation
+ 
+  if(!name||!phone||!city||!selectedSize||!selectedColor){
     ['inp-name','inp-phone','inp-city'].forEach(id=>{
       const el=document.getElementById(id);
       if(!el.value.trim()){el.style.borderColor='#ff4444';setTimeout(()=>el.style.borderColor='',1500);}
@@ -930,30 +976,56 @@ document.getElementById('orderBtn').addEventListener('click',()=>{
       document.getElementById('sizeGrid').style.outline='1px solid #ff4444';
       setTimeout(()=>document.getElementById('sizeGrid').style.outline='',1500);
     }
+    if(!selectedColor){
+      document.getElementById('colorGrid').style.outline='1px solid #ff4444';
+      setTimeout(()=>document.getElementById('colorGrid').style.outline='',1500);
+    }
     return;
   }
-
+ 
   const orders=getOrders();
   const orderId='WV-'+Date.now().toString().slice(-6);
   const now=new Date();
   const dateStr=now.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
-
+ 
   orders.unshift({
     id:orderId,name,phone,city,
-    size:selectedSize,qty,notes,
+    color:selectedColor,size:selectedSize,qty,notes,
     status:'Pending',date:dateStr
   });
   saveOrders(orders);
   renderOrders();
-
+ 
+  const msg = `🌊 *WAVE ORDER - Prado Clothing*\n\n*Order ID:* ${orderId}\n*Name:* ${name}\n*Phone:* ${phone}\n*City:* ${city}\n*Color:* ${selectedColor}\n*Size:* ${selectedSize}\n*Qty:* ${qty}\n*Notes:* ${notes || 'None'}\n*Date:* ${dateStr}`;
+  window.open('https://wa.me/201156245502?text=' + encodeURIComponent(msg), '_blank');
+ 
   // Show success
   document.getElementById('orderFormWrap').style.display='none';
   const succ=document.getElementById('orderSuccess');
   succ.style.display='flex';
   document.getElementById('orderIdDisplay').textContent='Order ID: '+orderId;
 });
-
+ 
 renderOrders();
+ 
+// ── SECURITY ──
+// Disable right click
+document.addEventListener('contextmenu', e => e.preventDefault());
+ 
+// Disable F12, Ctrl+Shift+I/J/U, Ctrl+U
+document.addEventListener('keydown', e => {
+  if (
+    e.key === 'F12' ||
+    (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase())) ||
+    (e.ctrlKey && e.key.toUpperCase() === 'U') ||
+    (e.ctrlKey && e.key.toUpperCase() === 'S')
+  ) { e.preventDefault(); e.stopPropagation(); }
+});
+ 
+ 
+ 
+// Disable text selection
+document.addEventListener('selectstart', e => e.preventDefault());
 </script>
 </body>
 </html>
