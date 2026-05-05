@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WAVE Command Center</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #060608;
+      --panel: #0c0c10;
+      --border: rgba(0,207,255,0.1);
+      --cyan: #00cfff;
+      --blue: #0055ff;
+      --text: #f5efe0;
+      --muted: rgba(245,239,224,0.5);
+      --success: #00c864;
+      --warning: #ffb400;
+      --danger: #ff3b3b;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      overflow-x: hidden;
+    }
+    /* Noise texture */
+    body::after {
+      content:''; position:fixed; inset:0;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");
+      pointer-events:none; z-index:9990;
+    }
+    .container { max-width:1400px; margin:0 auto; padding:32px 24px; position:relative; z-index:2; }
+    
+    /* Header */
+    .header {
+      display:flex; justify-content:space-between; align-items:flex-end;
+      margin-bottom:48px; flex-wrap:wrap; gap:16px;
+    }
+    .header-left .logo {
+      font-family:'Bebas Neue',sans-serif; font-size:3rem;
+      letter-spacing:.1em; color:var(--text);
+    }
+    .logo span { color:var(--cyan); }
+    .badge {
+      font-size:.65rem; letter-spacing:.2em; text-transform:uppercase;
+      color:var(--cyan); background:rgba(0,207,255,0.05);
+      border:1px solid rgba(0,207,255,0.25); padding:6px 14px;
+      border-radius:20px; margin-left:16px; vertical-align:middle;
+    }
+    .header-right {
+      display:flex; gap:16px; align-items:center;
+    }
+    .refresh-btn, .settings-btn {
+      font-family:'Space Mono',monospace; font-size:.6rem;
+      letter-spacing:.15em; text-transform:uppercase;
+      background:transparent; border:1px solid var(--border);
+      color:var(--muted); padding:10px 20px; cursor:pointer;
+      transition:all .2s; position:relative; z-index:5;
+    }
+    .refresh-btn:hover, .settings-btn:hover {
+      border-color:var(--cyan); color:var(--cyan);
+    }
+    .live-dot {
+      width:8px; height:8px; border-radius:50%; background:var(--success);
+      display:inline-block; margin-right:6px; animation:pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+
+    /* Stats Grid */
+    .stats-grid {
+      display:grid; grid-template-columns:repeat(4,1fr); gap:16px;
+      margin-bottom:40px;
+    }
+    .stat-card {
+      background:var(--panel); border:1px solid var(--border);
+      padding:24px; position:relative; overflow:hidden;
+    }
+    .stat-card::before {
+      content:''; position:absolute; top:0; left:0; width:100%; height:2px;
+      background:linear-gradient(90deg,var(--blue),var(--cyan));
+    }
+    .stat-label {
+      font-size:.55rem; letter-spacing:.2em; text-transform:uppercase;
+      color:var(--muted); margin-bottom:12px;
+    }
+    .stat-value {
+      font-family:'Bebas Neue',sans-serif; font-size:3rem; line-height:1;
+    }
+    .stat-sub { font-size:.6rem; color:var(--muted); margin-top:8px; }
+
+    /* Charts row */
+    .charts-row {
+      display:grid; grid-template-columns:2fr 1fr; gap:16px; margin-bottom:40px;
+    }
+    .chart-card {
+      background:var(--panel); border:1px solid var(--border); padding:24px;
+    }
+    .chart-title {
+      font-family:'Bebas Neue',sans-serif; font-size:1.3rem;
+      letter-spacing:.05em; margin-bottom:20px;
+    }
+    canvas { width:100%; height:auto; max-height:280px; }
+
+    .orders-table-wrap {
+      background:var(--panel); border:1px solid var(--border);
+      padding:0 24px 24px; margin-bottom:40px; overflow-x:auto;
+    }
+    .table-header {
+      display:flex; justify-content:space-between; align-items:center;
+      padding:20px 0; border-bottom:1px solid var(--border);
+      margin-bottom:16px;
+    }
+    .search-box {
+      background:rgba(255,255,255,0.03); border:1px solid var(--border);
+      color:var(--text); padding:8px 14px; font-family:'Space Mono',monospace;
+      font-size:.6rem; letter-spacing:.1em; width:220px; outline:none;
+    }
+    .search-box:focus { border-color:var(--cyan); }
+    .export-btn {
+      background:transparent; border:1px solid var(--border);
+      color:var(--muted); font-family:'Space Mono',monospace;
+      font-size:.55rem; letter-spacing:.1em; padding:8px 16px;
+      cursor:pointer; transition:.2s;
+    }
+    .export-btn:hover { border-color:var(--cyan); color:var(--cyan); }
+
+    table { width:100%; border-collapse:collapse; }
+    th {
+      text-align:left; font-size:.55rem; letter-spacing:.2em;
+      text-transform:uppercase; color:var(--muted); padding:12px 8px;
+      border-bottom:1px solid var(--border);
+    }
+    td {
+      padding:12px 8px; font-size:.7rem; border-bottom:1px solid rgba(255,255,255,0.02);
+      vertical-align:middle;
+    }
+    .status-badge {
+      font-size:.5rem; letter-spacing:.15em; text-transform:uppercase;
+      padding:4px 10px; border-radius:12px;
+    }
+    .status-pending { background:rgba(255,180,0,.1); color:var(--warning); border:1px solid rgba(255,180,0,.2); }
+    .status-confirmed { background:rgba(0,85,255,.1); color:var(--cyan); border:1px solid rgba(0,207,255,.2); }
+    .status-shipped { background:rgba(0,200,100,.15); color:var(--success); border:1px solid rgba(0,200,100,.2); }
+    .status-delivered { background:rgba(0,207,255,.1); color:var(--cyan); border:1px solid rgba(0,207,255,.25); }
+
+    .status-select {
+      background:rgba(255,255,255,0.03); border:1px solid var(--border);
+      color:var(--text); padding:4px 8px; font-family:'Space Mono',monospace;
+      font-size:.55rem; cursor:pointer;
+    }
+
+    .footer {
+      text-align:center; padding:32px 0;
+      font-size:.55rem; color:var(--muted); letter-spacing:.2em;
+      text-transform:uppercase; border-top:1px solid var(--border);
+    }
+
+    /* Modal */
+    .modal {
+      display:none; position:fixed; inset:0; z-index:1000;
+      background:rgba(0,0,0,0.85); backdrop-filter:blur(8px);
+      align-items:center; justify-content:center;
+    }
+    .modal.open { display:flex; }
+    .modal-content {
+      background:var(--panel); border:1px solid var(--border);
+      padding:32px; width:90%; max-width:500px;
+    }
+    .modal-title { font-family:'Bebas Neue',sans-serif; font-size:2rem; margin-bottom:20px; }
+    .modal-input {
+      width:100%; background:rgba(255,255,255,0.03); border:1px solid var(--border);
+      color:var(--text); padding:12px; font-family:'Space Mono',monospace;
+      font-size:.65rem; margin-bottom:16px; outline:none;
+    }
+
+    @media(max-width:768px) {
+      .stats-grid { grid-template-columns:1fr 1fr; }
+      .charts-row { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <div class="logo">WAV<span>E</span> <span class="badge">Command Center</span></div>
+    </div>
+    <div class="header-right">
+      <span style="font-size:.65rem; color:var(--muted);"><span class="live-dot"></span>Live Data</span>
+      <button class="refresh-btn" onclick="fetchData()">⟳ Refresh</button>
+      <button class="settings-btn" onclick="openSettings()">⚙ Sheet Config</button>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-grid" id="statsGrid"></div>
+
+  <!-- Charts -->
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-title">ORDERS BY CITY</div>
+      <canvas id="cityChart"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">SIZE DISTRIBUTION</div>
+      <canvas id="sizeChart"></canvas>
+    </div>
+  </div>
+
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-title">COLOR PREFERENCE</div>
+      <canvas id="colorChart"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">DAILY ORDERS (7 days)</div>
+      <canvas id="dailyChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Orders Table -->
+  <div class="orders-table-wrap">
+    <div class="table-header">
+      <span style="font-family:'Bebas Neue',sans-serif; font-size:1.5rem; letter-spacing:.05em;">RECENT ORDERS</span>
+      <div style="display:flex; gap:12px;">
+        <input type="text" class="search-box" placeholder="Search..." id="searchInput" oninput="renderTable()">
+        <button class="export-btn" onclick="exportCSV()">⤓ Export CSV</button>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr><th>Order ID</th><th>Customer</th><th>Phone</th><th>City</th><th>Color</th><th>Size</th><th>Qty</th><th>Status</th><th>Date</th></tr>
+      </thead>
+      <tbody id="ordersBody"></tbody>
+    </table>
+  </div>
+
+  <div class="footer">Wave Command Center · Prado Clothing · Cairo, Egypt · Confidential</div>
+</div>
+
+<!-- Settings Modal -->
+<div class="modal" id="settingsModal">
+  <div class="modal-content">
+    <div class="modal-title">Data Source</div>
+    <label style="font-size:.6rem; color:var(--muted);">Google Apps Script Web App URL</label>
+    <input type="text" class="modal-input" id="sheetUrlInput" placeholder="https://script.google.com/macros/s/...">
+    <div style="display:flex; gap:12px; margin-top:12px;">
+      <button class="refresh-btn" onclick="saveConfig()">Save & Reload</button>
+      <button class="settings-btn" onclick="closeSettings()">Cancel</button>
+    </div>
+    <p style="font-size:.5rem; color:var(--muted); margin-top:16px;">Make sure your script returns JSON array with keys: id, name, phone, city, color, size, qty, status, date, notes</p>
+  </div>
+</div>
+
+<script>
+// Configuration
+const STORAGE_KEY = 'wave_dashboard_config';
+let ordersData = [];
+
+// Load saved sheet URL
+function getSheetUrl() {
+  const config = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  return config.sheetUrl || '';
+}
+
+// Fetch from Google Sheet (via Apps Script)
+async function fetchData() {
+  const url = getSheetUrl();
+  if (!url) {
+    showDemoData();
+    return;
+  }
+  try {
+    const res = await fetch(url);
+    const json = await res.json();
+    if (Array.isArray(json)) {
+      ordersData = json;
+    } else {
+      ordersData = [];
+    }
+  } catch (e) {
+    console.error('Fetch error, using demo data', e);
+    showDemoData();
+  }
+  updateDashboard();
+}
+
+function showDemoData() {
+  // Dummy data that matches the vibe
+  ordersData = [
+    { id:'WV-880406', name:'Adham Elsawy', phone:'01289580727', city:'Giza', color:'Black', size:'XXL', qty:'1', status:'Pending', date:'10 Apr 2026', notes:'' },
+    { id:'WV-986011', name:'Mostafa', phone:'01010442323', city:'Giza', color:'White', size:'XL', qty:'1', status:'Pending', date:'10 Apr 2026', notes:'عذاب موكته' },
+    { id:'WV-102345', name:'Omar Ahmed', phone:'01xxxxxxxxx', city:'Cairo', color:'Navy', size:'L', qty:'2', status:'Confirmed', date:'9 Apr 2026', notes:'Test order' },
+    { id:'WV-102346', name:'Layla', phone:'01xxxxxxxxx', city:'Alexandria', color:'Black', size:'M', qty:'1', status:'Shipped', date:'8 Apr 2026', notes:'' },
+    { id:'WV-102347', name:'Karim', phone:'01xxxxxxxxx', city:'Shorouk', color:'White', size:'XL', qty:'1', status:'Delivered', date:'7 Apr 2026', notes:'' },
+  ];
+}
+
+// Update all UI
+function updateDashboard() {
+  updateStats();
+  renderCharts();
+  renderTable();
+}
+
+// Stats calculation
+function updateStats() {
+  const total = ordersData.length;
+  const pending = ordersData.filter(o=>o.status==='Pending').length;
+  const confirmed = ordersData.filter(o=>o.status==='Confirmed').length;
+  const delivered = ordersData.filter(o=>o.status==='Delivered').length;
+  // Simple revenue (assuming price 1500 EGP)
+  const totalQty = ordersData.reduce((acc,o)=>acc+(parseInt(o.qty)||0),0);
+  const revenue = totalQty * 1500;
+  
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat-card"><div class="stat-label">Total Orders</div><div class="stat-value">${total}</div><div class="stat-sub">Since launch</div></div>
+    <div class="stat-card"><div class="stat-label">Pending</div><div class="stat-value" style="color:var(--warning);">${pending}</div><div class="stat-sub">Needs action</div></div>
+    <div class="stat-card"><div class="stat-label">Confirmed / Shipped</div><div class="stat-value">${confirmed + ordersData.filter(o=>o.status==='Shipped').length}</div><div class="stat-sub">In progress</div></div>
+    <div class="stat-card"><div class="stat-label">Est. Revenue</div><div class="stat-value">EGP ${revenue.toLocaleString()}</div><div class="stat-sub">${totalQty} pieces sold</div></div>
+  `;
+}
+
+// Charts (Canvas)
+function renderCharts() {
+  // City Chart
+  const cityCount = {};
+  ordersData.forEach(o=>{ const c = o.city || 'Unknown'; cityCount[c] = (cityCount[c]||0)+1; });
+  drawBarChart('cityChart', cityCount, 'City', '#00cfff');
+  
+  // Size Chart
+  const sizeCount = {};
+  ordersData.forEach(o=>{ sizeCount[o.size] = (sizeCount[o.size]||0)+1; });
+  drawBarChart('sizeChart', sizeCount, 'Size', '#0055ff');
+  
+  // Color Chart
+  const colorCount = {};
+  ordersData.forEach(o=>{ colorCount[o.color] = (colorCount[o.color]||0)+1; });
+  drawBarChart('colorChart', colorCount, 'Color', '#ffb400');
+  
+  // Daily (last 7 days)
+  const daily = {};
+  const today = new Date();
+  for(let i=6;i>=0;i--) {
+    const d = new Date(today);
+    d.setDate(d.getDate()-i);
+    const key = d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'});
+    daily[key] = 0;
+  }
+  ordersData.forEach(o=>{
+    try {
+      const d = new Date(o.date);
+      const key = d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'});
+      if(daily.hasOwnProperty(key)) daily[key] = (daily[key]||0)+1;
+    } catch(e){}
+  });
+  drawBarChart('dailyChart', daily, 'Day', '#00c864');
+}
+
+function drawBarChart(canvasId, dataObj, label, color) {
+  const canvas = document.getElementById(canvasId);
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const labels = Object.keys(dataObj);
+  const values = Object.values(dataObj);
+  
+  // Set canvas dimensions
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight || 250;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  
+  if(labels.length===0) {
+    ctx.fillStyle = 'rgba(255,255,255,0.1)';
+    ctx.font = '12px "Space Mono"';
+    ctx.fillText('No data', 20, 30);
+    return;
+  }
+  
+  const padding = 40;
+  const chartWidth = canvas.width - padding*2;
+  const chartHeight = canvas.height - padding*2;
+  const maxVal = Math.max(...values, 1);
+  
+  // Grid lines
+  ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+  ctx.lineWidth = 1;
+  for(let i=0; i<=4; i++) {
+    const y = padding + (chartHeight/4)*i;
+    ctx.beginPath();
+    ctx.moveTo(padding, y);
+    ctx.lineTo(canvas.width-padding, y);
+    ctx.stroke();
+  }
+  
+  // Bars
+  const barWidth = chartWidth / labels.length * 0.6;
+  ctx.fillStyle = color;
+  labels.forEach((l,i)=>{
+    const x = padding + (chartWidth / labels.length) * i + (chartWidth/labels.length - barWidth)/2;
+    const h = (values[i]/maxVal) * chartHeight;
+    const y = canvas.height - padding - h;
+    ctx.fillRect(x, y, barWidth, h);
+    
+    // Label
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    ctx.font = '9px "Space Mono"';
+    ctx.textAlign = 'center';
+    ctx.fillText(l, x+barWidth/2, canvas.height-padding+15);
+    // Value
+    ctx.fillStyle = color;
+    ctx.fillText(values[i], x+barWidth/2, y-6);
+  });
+}
+
+// Table rendering with search and status change
+function renderTable() {
+  const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+  const filtered = ordersData.filter(o=> 
+    o.name?.toLowerCase().includes(searchTerm) || 
+    o.id?.toLowerCase().includes(searchTerm) || 
+    o.city?.toLowerCase().includes(searchTerm)
+  );
+  
+  const tbody = document.getElementById('ordersBody');
+  if(filtered.length===0) {
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; color:var(--muted);">No orders found</td></tr>';
+    return;
+  }
+  
+  tbody.innerHTML = filtered.map((o,i) => `
+    <tr>
+      <td style="color:var(--cyan);">${o.id}</td>
+      <td>${o.name}</td>
+      <td>${o.phone}</td>
+      <td>${o.city}</td>
+      <td>${o.color || '—'}</td>
+      <td>${o.size}</td>
+      <td>${o.qty}</td>
+      <td>
+        <select class="status-select" onchange="changeStatus('${o.id}', this.value)">
+          <option value="Pending" ${o.status==='Pending'?'selected':''}>Pending</option>
+          <option value="Confirmed" ${o.status==='Confirmed'?'selected':''}>Confirmed</option>
+          <option value="Shipped" ${o.status==='Shipped'?'selected':''}>Shipped</option>
+          <option value="Delivered" ${o.status==='Delivered'?'selected':''}>Delivered</option>
+        </select>
+      </td>
+      <td>${o.date}</td>
+    </tr>
+  `).join('');
+}
+
+// Change status locally (and if connected to sheet, could update)
+function changeStatus(orderId, newStatus) {
+  const order = ordersData.find(o=>o.id===orderId);
+  if(order) {
+    order.status = newStatus;
+    updateDashboard();
+    // If you have a write-back Apps Script, you could call it here.
+    // For now just updates in-memory.
+  }
+}
+
+// Export CSV
+function exportCSV() {
+  if(ordersData.length===0) return;
+  const headers = ['ID','Name','Phone','City','Color','Size','Qty','Status','Date','Notes'];
+  const csv = [headers.join(',')];
+  ordersData.forEach(o=>{
+    csv.push([o.id,`"${o.name}"`,o.phone,o.city,o.color,o.size,o.qty,o.status,o.date,`"${o.notes||''}"`].join(','));
+  });
+  const blob = new Blob([csv.join('\n')], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `wave_orders_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+
+// Settings modal
+function openSettings() {
+  document.getElementById('settingsModal').classList.add('open');
+  document.getElementById('sheetUrlInput').value = getSheetUrl();
+}
+function closeSettings() { document.getElementById('settingsModal').classList.remove('open'); }
+function saveConfig() {
+  const url = document.getElementById('sheetUrlInput').value.trim();
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({sheetUrl: url}));
+  closeSettings();
+  fetchData();
+}
+
+// Init
+window.onload = () => {
+  if (getSheetUrl()) {
+    fetchData();
+  } else {
+    showDemoData();
+    updateDashboard();
+  }
+};
+</script>
+</body>
+</html>
