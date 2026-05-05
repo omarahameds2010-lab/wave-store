@@ -983,22 +983,40 @@ document.getElementById('orderBtn').addEventListener('click',()=>{
     return;
   }
  
-  const orders=getOrders();
-  const orderId='WV-'+Date.now().toString().slice(-6);
-  const now=new Date();
-  const dateStr=now.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
- 
+    const orders = getOrders();
+  const orderId = 'WV-' + Date.now().toString().slice(-6);
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-GB', {day:'2-digit', month:'short', year:'numeric'});
+
   orders.unshift({
-    id:orderId,name,phone,city,
-    color:selectedColor,size:selectedSize,qty,notes,
-    status:'Pending',date:dateStr
+    id: orderId, name, phone, city,
+    color: selectedColor, size: selectedSize, qty, notes,
+    status: 'Pending', date: dateStr
   });
   saveOrders(orders);
   renderOrders();
- 
-  const msg = `🌊 *WAVE ORDER - Prado Clothing*\n\n*Order ID:* ${orderId}\n*Name:* ${name}\n*Phone:* ${phone}\n*City:* ${city}\n*Color:* ${selectedColor}\n*Size:* ${selectedSize}\n*Qty:* ${qty}\n*Notes:* ${notes || 'None'}\n*Date:* ${dateStr}`;
+
+  // ➕ أضف هذا الجزء بالكامل
+  fetch('https://script.google.com/macros/s/AKfycbwryTZuAtv2-IhHLaq0cAcexGkWMtF88H6sS9K5zIc7-aobSW_G5pR5E6oQe_Aud6Cc/exec', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      id: orderId,
+      name: name,
+      phone: phone,
+      city: city,
+      color: selectedColor,
+      size: selectedSize,
+      qty: qty,
+      status: 'Pending',
+      date: dateStr,
+      notes: notes
+    })
+  }).catch(e => console.log('Sheet sync failed', e));
+
+  // ثم يبقى واتساب
+  const msg = `🌊 *WAVE ORDER - Prado Clothing*\n\n...`;
   window.open('https://wa.me/201156245502?text=' + encodeURIComponent(msg), '_blank');
- 
   // Show success
   document.getElementById('orderFormWrap').style.display='none';
   const succ=document.getElementById('orderSuccess');
